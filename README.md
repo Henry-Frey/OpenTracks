@@ -1,203 +1,237 @@
-# <img src="drawable-svg/LOGO.svg" alt="OpenTracks logo" height="40"></img> OpenTracks: a sport tracker
+# OpenTracks — Fitness Analytics Fork
 
-_OpenTracks_ is a sport tracking application that completely respects your privacy.
+> A privacy-first Android sport tracker extended with a full fitness analytics engine:
+> heart rate zones, training load (TRIMP / hrTSS), and a Fitness & Freshness dashboard
+> modelled after the CTL/ATL/TSB performance management chart used by platforms like Strava.
 
-[![Awesome Humane Tech](https://codeberg.org/teaserbot-labs/delightful-humane-design/raw/branch/main/humane-tech-badge.svg)](https://delightful.club/delightful-humane-design/#health)
+[![Android](https://img.shields.io/badge/platform-Android-3ddc84?logo=android&logoColor=white)](https://developer.android.com)
+[![Java](https://img.shields.io/badge/language-Java-f89820?logo=openjdk&logoColor=white)](https://openjdk.org)
+[![Min SDK](https://img.shields.io/badge/minSdk-26-blue)](https://developer.android.com/tools/releases/platforms#8.0)
+[![License](https://img.shields.io/badge/license-Apache%202.0-lightgrey)](LICENSE)
+[![Fork of](https://img.shields.io/badge/fork%20of-OpenTracks-orange)](https://codeberg.org/OpenTracksApp/OpenTracks)
 
-<table>
-    <tr>
-        <th>Free (F-Droid)</th>
-        <th>Free (Nightly for F-Droid)</th>
-        <th>Donations</th>
-    </tr>
-    <tr>
-        <td align="center">
-            <a href="https://f-droid.org/packages/de.dennisguse.opentracks.playstore">
-                <img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="60" align="middle">
-            </a>
-        </td>
-        <td align="center">
-            <a href="https://fdroid.storchp.de/fdroid/repo?fingerprint=99985A7E73DCB0B16C9BDDCE7A0B4996F88068AE7C771ED53E217E69CD1FF196">
-                <img alt="Nightly builds (for F-Droid client)" src="https://opentracksapp.com/static/img/fdroid.storchp.de.png" height="90" align="middle">
-            </a>
-        </td>
-        <td align="center">
-            <a href="https://liberapay.com/OpenTracks/donate">
-                <img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg" height="45" align="middle">
-            </a>
-        </td>
-    </tr>
-    <tr>
-        <td align="center">
-            <img alt="OpenTracks version published on F-Droid" src="https://img.shields.io/f-droid/v/de.dennisguse.opentracks.playstore.svg" align="middle" >
-        </td>
-        <td></td>
-        <td align="center">
-            <a href="https://play.google.com/store/apps/details?id=de.dennisguse.opentracks.playstore">
-                <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60" align="middle">
-            </a>
-        </td>
-    </tr>
-</table>
+---
 
-Translations are hosted on <a href="https://hosted.weblate.org/engage/opentracks/">
-hosted.weblate.org</a>.
-<a href="https://hosted.weblate.org/engage/opentracks/">
-<img src="https://hosted.weblate.org/widgets/opentracks/-/horizontal-auto.svg" alt="Translation status" />
-</a>
+## Overview
 
-## Screenshots
+This project forks [OpenTracks](https://codeberg.org/OpenTracksApp/OpenTracks) — a well-established
+open-source GPS and BLE sport tracker — and layers a complete fitness analytics system on top.
+The goal was to answer the question: *how do you go from raw heart rate data to meaningful training
+insights?*
 
-<div>
-    <img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot1.png">
-    <img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot2.png">
-    <img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot3.png">
-    <img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot4.png">
-</div>
-<div>
-	<img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot5.png">
-    <img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot6.png">
-	<img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot7.png">
-	<img width="23%" src="fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot8.png">
-</div>
+The result is a self-contained Android app that, entirely on-device and with no cloud dependency,
+computes training load, tracks fitness over time, and surfaces per-activity analytics alongside
+every recorded workout.
 
-## Features
-* __Tracking:__ track your sport and outdoor activities
-* __Voice announcements__
-* __Photos and Markers:__ mark interesting locations while tracking
-* __Export:__
-    * export tracks either as [KMZ 2.3](https://docs.opengeospatial.org/is/12-007r2/12-007r2.html) (incl. photos), [KML 2.3](https://docs.opengeospatial.org/is/12-007r2/12-007r2.html), or [GPX 1.1](https://www.topografix.com/GPX/1/1/)
-    * export automatically after each recording (e.g., to sync via [Nextcloud](https://nextcloud.com/))
-    * avoid duplication: each exported file contain a random unique identifier (i.e., `opentracks:trackid`)
-* __Altitude:__
-    * gain/loss via barometric sensor (internal if present or via Bluetooth's Environmental Sensing Service)
-    * shown in EGM2008 (above mean sea level); exported as WGS84
-* __Bluetooth LE sensors:__
-    * heart rate
-    * cycling: speed and distance
-    * cycling: cadence
-    * cycling: power meter
-    * running: speed and cadence
-    * support for BLE sensor training only (i.e., without GPS) for indoor training
+---
 
-  An overview of tested sensors: [README_TESTED_SENSORS.md](README_TESTED_SENSORS.md)
+## Features Added
 
-### Gadgetbridge integration
+### Heart Rate Zones
+Three configurable zone models, all derived from the user's personal fitness profile:
 
-OpenTracks can be used with [Gadgetbridge](https://www.gadgetbridge.org/):
-* shows statistics via notification on smart watches (requires Gadgetbridge 0.56.1 or later), and
-* Gadgetbridge's GPX exporter generates `opentracks:trackid` to avoid duplication (Gadgetbridge 0.53.0 or later).
+| Model | Basis | Zones |
+|---|---|---|
+| % of Max HR | Age-predicted or user-set MaxHR | 5 zones |
+| Karvonen (HRR) | Heart Rate Reserve (MaxHR − RHR) | 5 zones |
+| LTHR-Based Friel | Lactate Threshold HR | 7 zones (Z1–Z5c) |
 
-### Privacy
-* __No Internet access:__ Internet is not used
-* __No advertising__
-* __No in-app analytics__
-* __No use of Google Play Services__
+Zone boundaries are computed dynamically and visualised as a colour-coded horizontal bar chart
+inside every activity's statistics screen.
 
-__Only required permissions:__
-* _ACCESS_FINE_LOCATION_: required to use the GPS.
-* _ACCESS_BACKGROUND_LOCATION_: required to start recording with GPS while phone is in standby. (e.g. when triggered by Public API from an external device)
+### Training Load — TRIMP & hrTSS
+Two complementary training-load metrics are calculated per activity and stored in the local
+SQLite database:
 
-### Public API
+- **TRIMP (Banister)** — integrates HR intensity over time using an exponential weighting curve,
+  with separate constants for male (k = 1.92) and female (k = 1.67) athletes.
+- **hrTSS** — normalises effort relative to the user's Lactate Threshold HR, analogous to
+  Coggan's TSS for cycling power.
 
-OpenTracks includes an API for starting/stopping recording by another installed application (e.g., [Automate](https://llamalab.com/automate/), [Tasker](https://tasker.joaoapps.com), or [Easer](https://github.com/renyuneyun/Easer)). 
-The API is disabled by default to protect the user's privacy, but it can easily be enabled in the settings. Once enabled, the API can be invoked by sending an explicit Intent to start an activity.
+### Fitness & Freshness Dashboard (CTL / ATL / TSB)
+An interactive `LineChart` (MPAndroidChart) plots the full training history as three
+exponentially-weighted moving averages:
 
-`Package`  (depends on the variant installed):
-* F-Droid: `de.dennisguse.opentracks`
-* GooglePlay: `de.dennisguse.opentracks.playStore`
-* Debug: `de.dennisguse.opentracks.debug`
-* Nightly: `de.dennisguse.opentracks.nightly`
+| Metric | Window | Meaning |
+|---|---|---|
+| **CTL** — Chronic Training Load | 42 days | Long-term fitness / aerobic base |
+| **ATL** — Acute Training Load | 7 days | Short-term fatigue |
+| **TSB** — Training Stress Balance | CTL − ATL | Form / readiness |
 
-`Classes`:
-* **Start a recording:**  `de.dennisguse.opentracks.publicapi.StartRecording`
-    * Set track data: `TRACK_NAME`, `TRACK_DESCRIPTION`, `TRACK_CATEGORY`, and `TRACK_ICON` (
-      non-localized identifier
-      see [/src/main/java/de/dennisguse/opentracks/util/TrackIconUtils.java#L38](/src/main/java/de/dennisguse/opentracks/util/TrackIconUtils.java#L38)).
-      NOTE: if `TRACK_ICON` is not present, `TRACK_CATEGORY` will be used to determine the icon (
-      localized).
-    * Send recorded data to another application via _Dashboard API_: `STATS_TARGET_PACKAGE` and
-      `STATS_TARGET_CLASS`
-* **Stop a recording:**  `de.dennisguse.opentracks.publicapi.StopRecording`
-* **Create a marker:**  `de.dennisguse.opentracks.publicapi.CreateMarker`
+A plain-language interpretation of today's TSB guides recovery decisions
+(e.g. *"Productive training block"*, *"Good race readiness"*).
 
-For testing the API using adb, the general command syntax is:
+### Per-Activity Analytics
+Displayed directly in the statistics screen for every recorded workout:
 
-```shell
-adb shell am start -e someParameter someValue -n "package/class"
+- **Time-in-zones** — seconds and percentage spent in each HR zone
+- **Aerobic Decoupling** — compares cardiac efficiency (pace ÷ HR) between the first and second
+  halves of an activity; < 5% indicates aerobic efficiency
+- **Suffer Score** — zone-weighted load index (weights 1 / 2 / 3 / 4 / 8 per zone)
+- **VO₂max Estimate** — derived from steady-state running segments using the
+  ACSM metabolic equation and the Swain %VO₂ / %HRmax relationship
+
+### Fitness Profile Settings
+A dedicated settings screen allows configuration of:
+- Resting Heart Rate (RHR)
+- Maximum Heart Rate (manual override, or automatic via the **Tanaka formula**: 208 − 0.7 × age)
+- Lactate Threshold Heart Rate (LTHR)
+- Date of birth, biological sex (affects TRIMP k-constant)
+- Preferred HR zone model
+
+---
+
+## Architecture
+
+```
+app/
+├── analytics/
+│   ├── HeartRateZoneCalculator.java   # Zone boundary computation (3 models)
+│   ├── ActivityAnalytics.java         # Per-activity metrics (zones, decoupling, VO2max)
+│   └── TrainingLoadCalculator.java    # TRIMP, hrTSS, CTL/ATL/TSB history
+│
+├── ui/dashboard/
+│   └── DashboardActivity.java         # Fitness & Freshness chart screen
+│
+├── settings/
+│   ├── FitnessSettingsFragment.java   # Fitness profile preferences UI
+│   └── PreferencesUtils.java          # (extended) typed preference accessors
+│
+└── data/
+    ├── tables/TracksColumns.java      # (extended) trimp + hrtss columns
+    └── CustomSQLiteOpenHelper.java    # (extended) DB migration v38 → v39
 ```
 
-Depending on the package and class, a complete command could look something like this:
+### Data Flow
 
-```shell
-adb shell am start -n "de.dennisguse.opentracks.playstore/de.dennisguse.opentracks.publicapi.StartRecording"
+```
+BLE Heart Rate Sensor
+        │
+        ▼
+  TrackPoint (HR + GPS + timestamp)
+        │
+        ├──► TrainingLoadCalculator ──► SQLite (trimp, hrtss per track)
+        │                                        │
+        │                                        ▼
+        │                              buildFitnessHistory()
+        │                                        │
+        │                                        ▼
+        │                               CTL / ATL / TSB
+        │                                        │
+        │                                        ▼
+        │                              DashboardActivity (LineChart)
+        │
+        └──► ActivityAnalytics ──► time-in-zones, decoupling,
+                                   suffer score, VO₂max
+                                        │
+                                        ▼
+                           StatisticsRecordedFragment (BarChart)
 ```
 
-## File formats compatibility with open-source software
-|                                                           | [GPX 1.1](https://www.topografix.com/GPX/1/1/)                                 | [KML 2.3](https://docs.opengeospatial.org/is/12-007r2/12-007r2.html) | [KMZ 2.3](https://docs.opengeospatial.org/is/12-007r2/12-007r2.html) |
-|-----------------------------------------------------------|--------------------------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------------------------------|
-| [OpenLayers 7.1.0](https://openlayers.org/)               | ?                                                                              | [no](https://github.com/openlayers/openlayers/issues/14104)          | [no](https://github.com/openlayers/openlayers/issues/14104)          |
-| [Golden Cheetah 3.5](https://www.goldencheetah.org/)      | ?                                                                              | [no](https://github.com/GoldenCheetah/GoldenCheetah/issues/4271)     | [no](https://github.com/GoldenCheetah/GoldenCheetah/issues/4271)     |
-| [GpxPod](https://apps.nextcloud.com/apps/gpxpod)          | ?                                                                              | ?                                                                    | ?                                                                    |
-| [OsmAnd](https://github.com/osmandapp/OsmAnd)             | ?                                                                              | [no](https://github.com/osmandapp/OsmAnd/issues/15271)               | [no](https://github.com/osmandapp/OsmAnd/issues/15271)               |
-| [FitTrackee](https://github.com/SamR1/FitTrackee)         | yes                                                                            | n/a                                                                  | n/a                                                                  |
-| [SportsTracker](https://github.com/ssaring/sportstracker) | yes, [single tracks only](https://github.com/ssaring/sportstracker/issues/260) | no                                                                   | no                                                                   |
-| [ExifTool](https://exiftool.org)                          | [yes](https://exiftool.org/forum/index.php?topic=15972.0)                      | no                                                                   | no                                                                   |
-| [Wanderer](https://wanderer.to/)                          | yes                      | yes                                                                   | yes                                                                   |
+---
 
+## Tech Stack
 
-## Dashboard API (incl. map)
+| Layer | Technology |
+|---|---|
+| Language | Java 17 |
+| UI | Android Views, Material Design 3, ViewBinding |
+| Charts | [MPAndroidChart v3.1.0](https://github.com/PhilJay/MPAndroidChart) |
+| Persistence | SQLite (ContentProvider pattern) |
+| Sensors | Bluetooth LE (existing OpenTracks infrastructure) |
+| Async | `java.util.concurrent.Executors` |
+| Build | Gradle 8, Android Gradle Plugin |
 
-As of v3.3.1, OpenTracks supports custom dashboards for displaying previously recorded and live
-tracks.
+---
 
-The reference implementation is [OSMDashboard](https://codeberg.org/OpenTracksApp/OSMDashboard), which
-presents an OpenStreetMap map (showing the current track, incl. updates). The Dashboard API is also
-used by [Gadgetbridge](https://codeberg.org/Freeyourgadget/Gadgetbridge/) for displaying live track
-statistics on supported wearables.
+## Key Algorithms
 
-Alternatively, recorded tracks can be shared as KMZ/GPX with installed applications (
-e.g., [OsmAnd](https://play.google.com/store/apps/details?id=net.osmand)). However, this is rather
-slow and does not provide updates while recording.
+### TRIMP (Banister, 1991)
+For each time interval *dt* (minutes) at heart rate *HR*:
 
-The developer documentation is in [README_API.md](README_API.md).
+```
+HRR  = (maxHR − rhr)
+ratio = clamp((HR − rhr) / HRR, 0, 1)
+TRIMP += dt × ratio × e^(k × ratio)
+```
+where *k* = 1.92 (male) or 1.67 (female).
 
-## Backup
+### CTL / ATL Update (daily)
+```
+CTL_today = CTL_yesterday + (load − CTL_yesterday) / 42
+ATL_today = ATL_yesterday + (load − ATL_yesterday) / 7
+TSB_today = CTL_yesterday − ATL_yesterday
+```
 
-OpenTracks stores the data in the app-internal space:
-`/data/data/de.dennisguse.opentracks[|.playstore]`
+### VO₂max Estimate (Swain + ACSM)
+```
+%VO2   = (%HRmax − 0.37) / 0.64
+VO2    = speed_mpm × 0.2 + 3.5        (ACSM running equation)
+VO2max = VO2 / %VO2
+```
+Averaged across all qualifying steady-state points in the activity
+(speed > 0.5 m/s, HR > 37% of MaxHR).
 
-There is a SQLite database `database.db` that contains the tracks as well as the markers.
-Pictures attached to markers are stored as separate files.
+### Aerobic Decoupling
+```
+eff1 = avgSpeed_1st_half / avgHR_1st_half
+eff2 = avgSpeed_2nd_half / avgHR_2nd_half
+decoupling (%) = (eff1 − eff2) / eff1 × 100
+```
 
-For backup and recovery, the best approach is to export as one KMZ file.
-This will contain all the tracks, pictures and the data as similar as possible as stored internally.
-In difference to backing up the database directly, a KMZ allows to be imported into a different (
-e.g., newer) version of OpenTracks.
+---
 
-## Project history
+## Getting Started
 
-_OpenTracks_ is based upon Google _My Tracks app_ ([code](https://code.google.com/archive/p/mytracks/)).
-_My Tracks_ was initially released by Google in 2010 as [open-source software](http://google-latlong.blogspot.fr/2010/05/code-for-my-tracks-is-now-yours.html).
-In 2016, [Google decided to discontinue](https://support.google.com/maps/answer/6333516) _My Tracks_ and stopped distributing it via the Google Play store in April 2016.
-Then [Plonk42](https://github.com/plonk42) conducted some maintenance work until 2016, so _My Tracks_ could still be used (based upon version _Google's MyTracks_ version 2.0.6).
-Plonk42's version is available [here](https://github.com/Plonk42/mytracks).
-In 2019, _OpenTracks_ was forked from Plonk42's _My Tracks_ and major rework was conducted.
+### Prerequisites
+- Android Studio Meerkat or newer
+- Android SDK 26+ device or emulator
+- A BLE heart rate monitor (optional but recommended for full analytics)
 
-Rework of _OpenTracks_ included:
-* removing Google's analytics code,
-* removing integration into Google Drive,
-* removing Google Maps integration,
-* removing Google Earth integration,
-* removing use of Google Play service,
-* removing calorie estimation and activity estimation,
-* removing support for ANT+ and Classic Bluetooth,
-* adding support for Bluetooth LE heart rate sensors,
-* removing Protobuf (store sensor data in SQLite columns directly), and
-* removing Android Service API for other apps.
+### Build
+```bash
+git clone https://github.com/OverfittingUnderachiever/OpenTracks.git
+cd OpenTracks
+git checkout feature/fitness-analytics
+./gradlew assembleDebug
+```
 
-Artwork, logos and user interface remained more or less unchanged.
+### First-time Setup
+1. Open the app and navigate to **Settings → Fitness Profile**
+2. Enter your resting heart rate, date of birth, and biological sex
+3. Optionally set a manual MaxHR or LTHR (the app will estimate them if left at 0)
+4. Choose a heart rate zone model
+5. Record or import an activity — analytics appear automatically in the stats screen
+6. Tap the chart icon in the bottom bar to open the Fitness & Freshness dashboard
 
-More information about _Google My Tracks_:
-* [Wikipedia page](https://en.wikipedia.org/wiki/MyTracks)
-* [Google code archive](https://code.google.com/archive/p/mytracks/)
+---
+
+## Database Migration
+
+The fork adds two columns to the `tracks` table via a non-destructive SQLite migration
+(`DATABASE_VERSION` 38 → 39):
+
+```sql
+ALTER TABLE tracks ADD COLUMN trimp FLOAT;
+ALTER TABLE tracks ADD COLUMN hrtss FLOAT;
+```
+
+Existing data is preserved. Downgrade to v38 recreates the table without these columns.
+
+---
+
+## Upstream
+
+This fork is based on [OpenTracks v4.22.0](https://codeberg.org/OpenTracksApp/OpenTracks).
+All original privacy guarantees are maintained — no internet access, no analytics, no
+third-party services. The fitness analytics engine runs entirely on-device.
+
+Original README and upstream documentation: [UPSTREAM.md](UPSTREAM_README.md)
+
+---
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE).
+Original work © Google Inc. / OpenTracks contributors.
+Fitness analytics additions © 2026 OverfittingUnderachiever.
