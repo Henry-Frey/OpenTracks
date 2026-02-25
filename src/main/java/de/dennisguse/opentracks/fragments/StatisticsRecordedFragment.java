@@ -17,6 +17,8 @@
 package de.dennisguse.opentracks.fragments;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -29,12 +31,27 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+
 import de.dennisguse.opentracks.R;
 import de.dennisguse.opentracks.TrackRecordedActivity;
+import de.dennisguse.opentracks.analytics.ActivityAnalytics;
+import de.dennisguse.opentracks.analytics.HeartRateZoneCalculator;
+import de.dennisguse.opentracks.analytics.TrainingLoadCalculator;
 import de.dennisguse.opentracks.data.ContentProviderUtils;
 import de.dennisguse.opentracks.data.models.DistanceFormatter;
 import de.dennisguse.opentracks.data.models.SpeedFormatter;
 import de.dennisguse.opentracks.data.models.Track;
+import de.dennisguse.opentracks.data.tables.TracksColumns;
 import de.dennisguse.opentracks.databinding.StatisticsRecordedBinding;
 import de.dennisguse.opentracks.settings.PreferencesUtils;
 import de.dennisguse.opentracks.settings.UnitSystem;
@@ -268,5 +285,128 @@ public class StatisticsRecordedFragment extends Fragment {
             viewBinding.statsMaxPowerValue.setText(maxW);
             viewBinding.statsAvgPowerValue.setText(avgW);
         }
+
+        loadAnalytics();
+    }
+
+    private void loadAnalytics() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Ensure TRIMP/hrTSS are computed and stored
+            TrainingLoadCalculator.computeAndSaveForTrack(requireContext(), trackId);
+
+            // Read stored TRIMP/hrTSS
+            double trimp = 0, hrTss = 0;
+            try (Cursor cursor = requireContext().getContentResolver().query(
+                    TracksColumns.CONTENT_URI,
+                    new String[]{TracksColumns.TRIMP, TracksColumns.HRTSS},
+                    TracksColumns._ID + "=?",
+                    new String[]{String.valueOf(trackId.id())}, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int trimpIdx = cursor.getColumnIndex(TracksColumns.TRIMP);
+                    int hrTssIdx = cursor.getColumnIndex(TracksColumns.HRTSS);
+                    if (trimpIdx >= 0 && !cursor.isNull(trimpIdx)) trimp = cursor.getDouble(trimpIdx);
+                    if (hrTssIdx >= 0 && !cursor.isNull(hrTssIdx)) hrTss = cursor.getDouble(hrTssIdx);
+                }
+            }
+
+            ActivityAnalytics analytics = ActivityAnalytics.compute(requireContext(), trackId);
+
+            final double finalTrimp = trimp;
+            final double finalHrTss = hrTss;
+
+            if (isResumed()) {
+                requireActivity().runOnUiThread(() -> {
+                    if (isResumed() && viewBinding != null) {
+                        updateAnalyticsUI(analytics, finalTrimp, finalHrTss);
+                    }
+                });
+            }
+        });
+    }
+
+    private void updateAnalyticsUI(ActivityAnalytics analytics, double trimp, double hrTss) {
+        viewBinding.analyticsTrimpValue.setText(String.format("%.1f", trimp));
+        viewBinding.analyticsHrtssValue.setText(String.format("%.1f", hrTss));
+        viewBinding.analyticsSufferValue.setText(String.format("%.0f", analytics.sufferScore));
+
+        if (analytics.vo2maxEstimate > 0) {
+            viewBinding.analyticsVo2maxValue.setText(String.format("%.1f ml/kg/min", analytics.vo2maxEstimate));
+        } else {
+            viewBinding.analyticsVo2maxValue.setText("—");
+        }
+
+        double dec = analytics.aerobicDecouplingPercent;
+        String decText = String.format("Aerobic Decoupling: %.1f%% (%s)",
+                dec, dec < 5.0 ? "aerobically efficient" : "above aerobic threshold");
+        viewBinding.analyticsDecouplingValue.setText(decText);
+
+        if (!analytics.hasHeartRateData) {
+            viewBinding.analyticsNoHrData.setVisibility(View.VISIBLE);
+            viewBinding.analyticsZoneChart.setVisibility(View.GONE);
+            return;
+        }
+
+        viewBinding.analyticsNoHrData.setVisibility(View.GONE);
+        viewBinding.analyticsZoneChart.setVisibility(View.VISIBLE);
+        buildZoneChart(analytics);
+    }
+
+    private void buildZoneChart(ActivityAnalytics analytics) {
+        int maxHR = PreferencesUtils.getFitnessEffectiveMaxHeartRate();
+        int rhr = PreferencesUtils.getFitnessRestingHeartRate();
+        int lthr = PreferencesUtils.getFitnessEffectiveLTHR();
+        String zoneModel = PreferencesUtils.getFitnessZoneModel();
+        HeartRateZoneCalculator calc = new HeartRateZoneCalculator(zoneModel, maxHR, rhr, lthr);
+
+        int[] zoneColors = {
+                Color.GRAY, Color.BLUE, Color.GREEN,
+                Color.parseColor("#FF9800"), Color.RED,
+                Color.parseColor("#B71C1C"), Color.parseColor("#4A148C")
+        };
+
+        List<BarEntry> entries = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+
+        long[] timeInZone = analytics.timeInZoneSeconds;
+        for (int i = 0; i < timeInZone.length; i++) {
+            float minutes = timeInZone[i] / 60f;
+            entries.add(new BarEntry(i, minutes));
+            colors.add(i < zoneColors.length ? zoneColors[i] : Color.GRAY);
+            labels.add(calc.getZoneName(i));
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "");
+        dataSet.setColors(colors);
+        dataSet.setDrawValues(true);
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value < 0.5f) return "";
+                int min = (int) value;
+                int sec = (int) ((value - min) * 60);
+                return min + ":" + String.format("%02d", sec);
+            }
+        });
+
+        HorizontalBarChart chart = viewBinding.analyticsZoneChart;
+        chart.setData(new BarData(dataSet));
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setDrawValueAboveBar(true);
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int idx = (int) value;
+                if (idx >= 0 && idx < labels.size()) return labels.get(idx);
+                return "";
+            }
+        });
+        chart.getAxisRight().setEnabled(false);
+        chart.invalidate();
     }
 }

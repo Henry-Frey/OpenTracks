@@ -14,6 +14,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -161,4 +162,6 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-android:5.19.0'
 
     androidTestUtil 'androidx.test:orchestrator:1.6.1'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

@@ -673,5 +673,164 @@
             app:layout_constraintEnd_toStartOf="@id/guideline3"
             app:layout_constraintTop_toBottomOf="@id/stats_power_barrier" />
 
+        <!-- ======= Training Analytics Section ======= -->
+
+        <TextView
+            android:id="@+id/analytics_section_title"
+            style="?attr/textAppearanceTitleMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/analytics_section_title"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/stats_end_horizontal_line" />
+
+        <!-- TRIMP / hrTSS row -->
+        <TextView
+            android:id="@+id/analytics_trimp_label"
+            style="@style/TextAppearance.OpenTracks.PrimaryHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/analytics_trimp_label"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/analytics_section_title" />
+
+        <TextView
+            android:id="@+id/analytics_trimp_value"
+            style="@style/TextAppearance.OpenTracks.PrimaryValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/analytics_trimp_label" />
+
+        <TextView
+            android:id="@+id/analytics_hrtss_label"
+            style="@style/TextAppearance.OpenTracks.PrimaryHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/analytics_hrtss_label"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_section_title" />
+
+        <TextView
+            android:id="@+id/analytics_hrtss_value"
+            style="@style/TextAppearance.OpenTracks.PrimaryValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_hrtss_label" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/analytics_load_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="analytics_trimp_value,analytics_hrtss_value" />
+
+        <!-- Suffer score / VO2max row -->
+        <TextView
+            android:id="@+id/analytics_suffer_label"
+            style="@style/TextAppearance.OpenTracks.PrimaryHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/analytics_suffer_score_label"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/analytics_load_barrier" />
+
+        <TextView
+            android:id="@+id/analytics_suffer_value"
+            style="@style/TextAppearance.OpenTracks.PrimaryValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/analytics_suffer_label" />
+
+        <TextView
+            android:id="@+id/analytics_vo2max_label"
+            style="@style/TextAppearance.OpenTracks.PrimaryHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/analytics_vo2max_label"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_load_barrier" />
+
+        <TextView
+            android:id="@+id/analytics_vo2max_value"
+            style="@style/TextAppearance.OpenTracks.PrimaryValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_vo2max_label" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/analytics_metrics_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="analytics_suffer_value,analytics_vo2max_value" />
+
+        <!-- Aerobic decoupling -->
+        <TextView
+            android:id="@+id/analytics_decoupling_value"
+            style="?attr/textAppearanceBodyMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_metrics_barrier" />
+
+        <!-- Zone chart title -->
+        <TextView
+            android:id="@+id/analytics_zone_title"
+            style="?attr/textAppearanceTitleSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/analytics_zone_title"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_decoupling_value" />
+
+        <!-- HR Zone bar chart -->
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/analytics_zone_chart"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_zone_title" />
+
+        <TextView
+            android:id="@+id/analytics_no_hr_data"
+            style="?attr/textAppearanceBodySmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/analytics_no_hr_data"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toStartOf="@id/guideline3"
+            app:layout_constraintTop_toBottomOf="@id/analytics_zone_title" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/analytics_final_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="analytics_zone_chart,analytics_no_hr_data" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

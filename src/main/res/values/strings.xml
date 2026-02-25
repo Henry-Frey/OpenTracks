@@ -697,4 +697,38 @@ limitations under the License.
     <string name="settings_announcements_lap_power">Lap power</string>
     <string name="power_x_watt">Power {x, plural,  =1 {1 watt} other {# watts} }</string>
     <string name="power">Power</string>
+
+    <!-- Fitness / User Profile -->
+    <string name="settings_fitness_title">Fitness Profile</string>
+    <string name="settings_fitness_summary">Heart rate zones, training load, VO2max</string>
+    <string name="fitness_rhr_title">Resting Heart Rate (bpm)</string>
+    <string name="fitness_maxhr_title">Maximum Heart Rate (bpm)</string>
+    <string name="fitness_maxhr_summary_hint">0 = auto-estimate via Tanaka formula (208 - 0.7 × age)</string>
+    <string name="fitness_lthr_title">Lactate Threshold HR (bpm)</string>
+    <string name="fitness_lthr_summary_hint">0 = use 90% of MaxHR as estimate</string>
+    <string name="fitness_dob_title">Year of Birth</string>
+    <string name="fitness_gender_title">Gender (for TRIMP weighting)</string>
+    <string name="fitness_gender_male">Male</string>
+    <string name="fitness_gender_female">Female</string>
+    <string name="fitness_zone_model_title">Zone Model</string>
+    <string name="fitness_zone_model_max_hr_percent">%% of Max HR</string>
+    <string name="fitness_zone_model_karvonen">Karvonen (HR Reserve)</string>
+    <string name="fitness_zone_model_lthr_friel">LTHR-Based (Friel)</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_title">Fitness Dashboard</string>
+    <string name="dashboard_fitness_label">Fitness (CTL)</string>
+    <string name="dashboard_fatigue_label">Fatigue (ATL)</string>
+    <string name="dashboard_form_label">Form (TSB)</string>
+    <string name="dashboard_no_data">No activity data yet. Record some activities first.</string>
+
+    <!-- Per-activity analytics -->
+    <string name="analytics_section_title">Training Analytics</string>
+    <string name="analytics_trimp_label">TRIMP</string>
+    <string name="analytics_hrtss_label">hrTSS</string>
+    <string name="analytics_suffer_score_label">Suffer Score</string>
+    <string name="analytics_decoupling_label">Aerobic Decoupling</string>
+    <string name="analytics_zone_title">Time in Heart Rate Zones</string>
+    <string name="analytics_no_hr_data">No heart rate data for this activity.</string>
+    <string name="analytics_vo2max_label">VO2max estimate</string>
 </resources>

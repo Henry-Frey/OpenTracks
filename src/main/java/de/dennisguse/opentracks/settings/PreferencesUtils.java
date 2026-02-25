@@ -306,6 +306,71 @@ public class PreferencesUtils {
         return new HeartRateZones(HeartRate.of(value));
     }
 
+    // ---- Fitness profile ----
+
+    public static int getFitnessRestingHeartRate() {
+        final int DEFAULT = Integer.parseInt(resources.getString(R.string.fitness_rhr_default));
+        try {
+            String s = getString(R.string.fitness_rhr_key, String.valueOf(DEFAULT));
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return DEFAULT;
+        }
+    }
+
+    public static int getFitnessMaxHeartRate() {
+        try {
+            String s = getString(R.string.fitness_maxhr_key, resources.getString(R.string.fitness_maxhr_default));
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public static int getFitnessEffectiveMaxHeartRate() {
+        int stored = getFitnessMaxHeartRate();
+        if (stored > 0) return stored;
+        // Tanaka fallback: 208 - 0.7 * age
+        int dob = getFitnessDOB();
+        if (dob > 1900) {
+            int age = java.time.Year.now().getValue() - dob;
+            return Math.max(120, (int) Math.round(208 - 0.7 * age));
+        }
+        return 190; // generic default
+    }
+
+    public static int getFitnessLTHR() {
+        try {
+            String s = getString(R.string.fitness_lthr_key, resources.getString(R.string.fitness_lthr_default));
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public static int getFitnessEffectiveLTHR() {
+        int stored = getFitnessLTHR();
+        if (stored > 0) return stored;
+        return (int) Math.round(getFitnessEffectiveMaxHeartRate() * 0.90);
+    }
+
+    public static int getFitnessDOB() {
+        try {
+            String s = getString(R.string.fitness_dob_key, resources.getString(R.string.fitness_dob_default));
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public static boolean isFitnessGenderMale() {
+        return "male".equals(getString(R.string.fitness_gender_key, resources.getString(R.string.fitness_gender_default)));
+    }
+
+    public static String getFitnessZoneModel() {
+        return getString(R.string.fitness_zone_model_key, resources.getString(R.string.fitness_zone_model_default));
+    }
+
     public static boolean shouldShowStatsOnLockscreen() {
         final boolean STATS_SHOW_ON_LOCKSCREEN_DEFAULT = resources.getBoolean(R.bool.stats_show_on_lockscreen_while_recording_default);
         return getBoolean(R.string.stats_show_on_lockscreen_while_recording_key, STATS_SHOW_ON_LOCKSCREEN_DEFAULT);

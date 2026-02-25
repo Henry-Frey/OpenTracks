@@ -29,7 +29,7 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String TAG = CustomSQLiteOpenHelper.class.getSimpleName();
 
-    private static final int DATABASE_VERSION = 38;
+    private static final int DATABASE_VERSION = 39;
 
     private final Context context;
 
@@ -82,6 +82,7 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
                 case 36 -> upgradeFrom35to36(db);
                 case 37 -> upgradeFrom36to37(db);
                 case 38 -> upgradeFrom37to38(db);
+                case 39 -> upgradeFrom38to39(db);
                 default -> throw new RuntimeException("Not implemented: upgrade to " + toVersion);
             }
         }
@@ -106,6 +107,7 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
                 case 34 -> downgradeFrom35to34(db);
                 case 35 -> downgradeFrom36to35(db);
                 case 36 -> downgradeFrom37to36(db);
+                case 38 -> downgradeFrom39to38(db);
                 case 37 -> downgradeFrom38to37(db);
                 default -> throw new RuntimeException("Not implemented: downgrade to " + toVersion);
             }
@@ -665,6 +667,33 @@ class CustomSQLiteOpenHelper extends SQLiteOpenHelper {
 
         db.execSQL("ALTER TABLE markers ADD COLUMN length FLOAT");
         db.execSQL("ALTER TABLE markers ADD COLUMN duration INTEGER");
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    /** Add TRIMP and hrTSS columns to the tracks table. */
+    private void upgradeFrom38to39(SQLiteDatabase db) {
+        db.beginTransaction();
+
+        db.execSQL("ALTER TABLE tracks ADD COLUMN trimp FLOAT");
+        db.execSQL("ALTER TABLE tracks ADD COLUMN hrtss FLOAT");
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    private void downgradeFrom39to38(SQLiteDatabase db) {
+        db.beginTransaction();
+
+        db.execSQL("DROP INDEX tracks_uuid_index");
+
+        db.execSQL("ALTER TABLE tracks RENAME TO tracks_old");
+        db.execSQL("CREATE TABLE tracks (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, category TEXT, starttime INTEGER, stoptime INTEGER, numpoints INTEGER, totaldistance FLOAT, totaltime INTEGER, movingtime INTEGER, avgspeed FLOAT, avgmovingspeed FLOAT, maxspeed FLOAT, minelevation FLOAT, maxelevation FLOAT, elevationgain FLOAT, icon TEXT, uuid BLOB, elevationloss FLOAT, starttime_offset INTEGER, activity_type TEXT)");
+        db.execSQL("INSERT INTO tracks SELECT _id, name, description, category, starttime, stoptime, numpoints, totaldistance, totaltime, movingtime, avgspeed, avgmovingspeed, maxspeed, minelevation, maxelevation, elevationgain, icon, uuid, elevationloss, starttime_offset, activity_type FROM tracks_old");
+        db.execSQL("DROP TABLE tracks_old");
+
+        db.execSQL("CREATE UNIQUE INDEX tracks_uuid_index ON tracks(uuid)");
 
         db.setTransactionSuccessful();
         db.endTransaction();

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_fitness_title">
+
+    <PreferenceCategory android:title="Personal Data">
+
+        <EditTextPreference
+            android:defaultValue="@string/fitness_dob_default"
+            android:inputType="number"
+            android:key="@string/fitness_dob_key"
+            android:title="@string/fitness_dob_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:defaultValue="@string/fitness_gender_default"
+            android:entries="@array/fitness_gender_options"
+            android:entryValues="@array/fitness_gender_values"
+            android:key="@string/fitness_gender_key"
+            android:title="@string/fitness_gender_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Heart Rate Thresholds">
+
+        <EditTextPreference
+            android:defaultValue="@string/fitness_rhr_default"
+            android:inputType="number"
+            android:key="@string/fitness_rhr_key"
+            android:title="@string/fitness_rhr_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:defaultValue="@string/fitness_maxhr_default"
+            android:inputType="number"
+            android:key="@string/fitness_maxhr_key"
+            android:summary="@string/fitness_maxhr_summary_hint"
+            android:title="@string/fitness_maxhr_title"
+            app:useSimpleSummaryProvider="false" />
+
+        <EditTextPreference
+            android:defaultValue="@string/fitness_lthr_default"
+            android:inputType="number"
+            android:key="@string/fitness_lthr_key"
+            android:summary="@string/fitness_lthr_summary_hint"
+            android:title="@string/fitness_lthr_title"
+            app:useSimpleSummaryProvider="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Zone Configuration">
+
+        <ListPreference
+            android:defaultValue="@string/fitness_zone_model_default"
+            android:entries="@array/fitness_zone_model_options"
+            android:entryValues="@array/fitness_zone_model_values"
+            android:key="@string/fitness_zone_model_key"
+            android:title="@string/fitness_zone_model_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

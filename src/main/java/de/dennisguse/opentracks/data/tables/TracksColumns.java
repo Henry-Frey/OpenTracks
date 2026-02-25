@@ -62,6 +62,9 @@ public interface TracksColumns extends BaseColumns {
     String ALTITUDE_GAIN = "elevationgain"; // altitude gain //TODO RENAME column
     String ALTITUDE_LOSS = "elevationloss"; // altitude loss //TODO RENAME column
 
+    String TRIMP = "trimp"; // Banister TRIMP training load
+    String HRTSS = "hrtss"; // HR-based TSS (normalized to LTHR)
+
     String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
             + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + NAME + " TEXT, "
@@ -83,7 +86,9 @@ public interface TracksColumns extends BaseColumns {
             + UUID + " BLOB, "
             + ALTITUDE_LOSS + " FLOAT, "
             + STARTTIME_OFFSET + " INTEGER, "
-            + ACTIVITY_TYPE + " TEXT)";
+            + ACTIVITY_TYPE + " TEXT, "
+            + TRIMP + " FLOAT, "
+            + HRTSS + " FLOAT)";
 
     String CREATE_TABLE_INDEX = "CREATE UNIQUE INDEX " + TABLE_NAME + "_" + UUID + "_index ON " + TABLE_NAME + "(" + UUID + ")";
 

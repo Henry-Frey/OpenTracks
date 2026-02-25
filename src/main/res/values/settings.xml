@@ -461,4 +461,37 @@
 
     <string name="prefs_last_version_key" translatable="false">lastVersionKey</string>
 
+    <!-- Fitness / User Profile settings -->
+    <string name="settings_fitness_key" translatable="false">settingsFitness</string>
+    <string name="fitness_rhr_key" translatable="false">fitnessRestingHeartRate</string>
+    <string name="fitness_rhr_default" translatable="false">60</string>
+    <string name="fitness_maxhr_key" translatable="false">fitnessMaxHeartRate</string>
+    <string name="fitness_maxhr_default" translatable="false">0</string>
+    <string name="fitness_lthr_key" translatable="false">fitnessLTHR</string>
+    <string name="fitness_lthr_default" translatable="false">0</string>
+    <string name="fitness_dob_key" translatable="false">fitnessDOB</string>
+    <string name="fitness_dob_default" translatable="false">0</string>
+    <string name="fitness_gender_key" translatable="false">fitnessGender</string>
+    <string name="fitness_gender_default" translatable="false">male</string>
+    <string name="fitness_zone_model_key" translatable="false">fitnessZoneModel</string>
+    <string name="fitness_zone_model_default" translatable="false">max_hr_percent</string>
+    <string-array name="fitness_zone_model_values">
+        <item>max_hr_percent</item>
+        <item>karvonen</item>
+        <item>lthr_friel</item>
+    </string-array>
+    <string-array name="fitness_zone_model_options">
+        <item>@string/fitness_zone_model_max_hr_percent</item>
+        <item>@string/fitness_zone_model_karvonen</item>
+        <item>@string/fitness_zone_model_lthr_friel</item>
+    </string-array>
+    <string-array name="fitness_gender_values">
+        <item>male</item>
+        <item>female</item>
+    </string-array>
+    <string-array name="fitness_gender_options">
+        <item>@string/fitness_gender_male</item>
+        <item>@string/fitness_gender_female</item>
+    </string-array>
+
 </resources>

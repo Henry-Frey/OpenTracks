@@ -40,6 +40,12 @@
         android:title="@string/settings_import_export_title" />
 
     <Preference
+        android:icon="@drawable/ic_baseline_sensors_24"
+        android:key="@string/settings_fitness_key"
+        android:summary="@string/settings_fitness_summary"
+        android:title="@string/settings_fitness_title" />
+
+    <Preference
         android:icon="@drawable/ic_baseline_api_24"
         android:key="@string/settings_api_key"
         android:summary="@string/settings_api_summary"
